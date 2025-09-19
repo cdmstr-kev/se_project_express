@@ -14,7 +14,7 @@ const getAllUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
 
@@ -25,12 +25,12 @@ const getUserById = (req, res) => {
     .catch((err) => {
       console.log(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).json({ error: "User not found" });
+        return res.status(NOT_FOUND).json({ message: "User not found" });
       } else if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).json({ error: "Invalid user ID" });
+        return res.status(BAD_REQUEST).json({ message: "Invalid user ID" });
       }
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
 
