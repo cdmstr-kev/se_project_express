@@ -14,7 +14,7 @@ const getAllUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
 
@@ -26,11 +26,12 @@ const getUserById = (req, res) => {
       console.log(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).json({ message: "User not found" });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(BAD_REQUEST).json({ message: "Invalid user ID" });
       }
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
 
@@ -38,16 +39,14 @@ const createUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.create({ name, avatar })
-    .then((newUser) => {
-      res.status(CREATED).json(newUser);
-    })
+    .then((newUser) => res.status(CREATED).json(newUser))
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
 
