@@ -1,4 +1,11 @@
 const User = require("../models/user");
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+  SUCCESSFUL,
+  CREATED,
+} = require("../utils/errors");
 
 const getAllUsers = (req, res) => {
   User.find()
@@ -7,25 +14,23 @@ const getAllUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
     });
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userID)
     .orFail()
-    .then((user) =>
-      res.status(200).json(user)
-    )
+    .then((user) => res.status(SUCCESSFUL).json(user))
     .catch((err) => {
       console.log(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).json({ error: "User not found" });
-      }else if (err.name === "CastError") {
-        return res.status(400).json({ error: "Invalid user ID" });
+        return res.status(NOT_FOUND).json({ error: "User not found" });
+      } else if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).json({ error: "Invalid user ID" });
       }
       console.error(err);
-      res.status(500).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
     });
 };
 
@@ -34,16 +39,16 @@ const createUser = (req, res) => {
 
   User.create({ name, avatar })
     .then((newUser) => {
-      res.status(201).json(newUser);
+      res.status(CREATED).json(newUser);
     })
     .catch((err) => {
+      console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).json({ error: err.message });
+        return res.status(BAD_REQUEST).json({ message: err.message });
       }
       console.error(err);
-      res.status(500).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
-
 
 module.exports = { getAllUsers, getUserById, createUser };

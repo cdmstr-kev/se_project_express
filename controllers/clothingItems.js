@@ -1,47 +1,63 @@
 const ClothingItem = require("../models/clothingItem");
+const {
+  CREATED,
+  INTERNAL_SERVER_ERROR,
+  NOT_FOUND,
+  SUCCESSFUL,
+  BAD_REQUEST,
+} = require("../utils/errors");
 
-const getAllClothingItems = (req, res) => {  // Remove 'async'
+const getAllClothingItems = (req, res) => {
   ClothingItem.find()
     .then((clothingItems) => {
       res.json(clothingItems);
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
     });
 };
 
-const getClothingItemById = (req, res) => {  // Remove 'async'
+const getClothingItemById = (req, res) => {
   ClothingItem.findById(req.params.clothingItemID)
+    .orFail()
     .then((clothingItem) => {
-      if (!clothingItem) {
-        return res.status(404).json({ error: "clothing item not found" });
-      }
-      res.json(clothingItem);
+      res.status(SUCCESSFUL).json(clothingItem);
     })
     .catch((err) => {
       console.error(err);
-      res.status(400).json({ error: "Invalid clothing item ID" });
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).json({ error: "clothing item not found" });
+      } else if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST)
+          .json({ error: "Invalid clothing item ID" });
+      }
+      console.error(err);
+      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
     });
 };
 
 const createClothingItem = (req, res) => {
+  console.log(req.user._id);
+
   const { name, weather, imageUrl } = req.body;
   ClothingItem.create({
     name,
     weather,
     imageUrl,
-    owner: "507f1f77bcf86cd799439011" // Don't forget the owner field!
+    owner: req.user._id,
   })
     .then((newClothingItem) => {
-      res.status(201).json(newClothingItem);
+      res.status(CREATED).json(newClothingItem);
     })
     .catch((err) => {
+      console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).json({ error: err.message });
+        return res.status(BAD_REQUEST).json({ error: err.message });
       }
       console.error(err);
-      res.status(500).json({ error: err.message });
+      res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
     });
 };
 
