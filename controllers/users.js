@@ -14,7 +14,7 @@ const getAllUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -23,7 +23,7 @@ const getUserById = (req, res) => {
     .orFail()
     .then((user) => res.status(SUCCESSFUL).json(user))
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).json({ message: "User not found" });
       }
@@ -31,7 +31,7 @@ const getUserById = (req, res) => {
         return res.status(BAD_REQUEST).json({ message: "Invalid user ID" });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -46,7 +46,7 @@ const createUser = (req, res) => {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
     });
 };
 
