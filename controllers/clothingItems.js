@@ -30,13 +30,14 @@ const getClothingItemById = (req, res) => {
         return res
           .status(NOT_FOUND)
           .json({ message: "clothing item not found" });
-      } if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(BAD_REQUEST)
           .json({ message: "Invalid clothing item ID" });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ error: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
 };
 
@@ -134,7 +135,7 @@ const dislikeItem = (req, res) => {
       }
       return res.status(INTERNAL_SERVER_ERROR).json({ message: err.message });
     });
-  };
+};
 
 module.exports = {
   getAllClothingItems,
