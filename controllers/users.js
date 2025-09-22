@@ -3,9 +3,8 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
-  SUCCESSFUL,
-  CREATED,
 } = require("../utils/errors");
+const { SUCCESSFUL, CREATED } = require("../utils/success");
 
 const getAllUsers = (req, res) => {
   User.find()
@@ -14,7 +13,9 @@ const getAllUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -31,7 +32,9 @@ const getUserById = (req, res) => {
         return res.status(BAD_REQUEST).json({ message: "Invalid user ID" });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -46,7 +49,9 @@ const createUser = (req, res) => {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 

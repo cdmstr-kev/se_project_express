@@ -6,6 +6,7 @@ const {
   SUCCESSFUL,
   BAD_REQUEST,
 } = require("../utils/errors");
+const { SUCCESSFUL, CREATED } = require("../utils/success");
 
 const getAllClothingItems = (req, res) => {
   ClothingItem.find()
@@ -14,7 +15,9 @@ const getAllClothingItems = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -37,7 +40,9 @@ const getClothingItemById = (req, res) => {
           .json({ message: "Invalid clothing item ID" });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -58,7 +63,9 @@ const createClothingItem = (req, res) => {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
       console.error(err);
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -79,7 +86,9 @@ const deleteClothingItem = (req, res) => {
           .status(BAD_REQUEST)
           .json({ message: "Invalid clothing item ID" });
       }
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -105,7 +114,9 @@ const likeItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -131,7 +142,9 @@ const dislikeItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).json({ message: err.message });
       }
-      return res.status(INTERNAL_SERVER_ERROR).json({ message: "An error has occurred on the server." });
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
