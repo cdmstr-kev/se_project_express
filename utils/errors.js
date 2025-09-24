@@ -9,6 +9,4 @@ module.exports = {
   UNAUTHORIZED,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
-  CREATED,
-  SUCCESSFUL,
 };
