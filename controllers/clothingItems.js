@@ -1,9 +1,7 @@
 const ClothingItem = require("../models/clothingItem");
 const {
-  CREATED,
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
-  SUCCESSFUL,
   BAD_REQUEST,
 } = require("../utils/errors");
 const { SUCCESSFUL, CREATED } = require("../utils/success");
