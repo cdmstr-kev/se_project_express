@@ -4,6 +4,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  CONFLICT,
 } = require("../utils/errors");
 const { SUCCESSFUL, CREATED } = require("../utils/success");
 
@@ -57,6 +58,9 @@ const createUser = (req, res) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).json({ message: err.message });
+      }
+      if (err.code === 11000) {
+        return res.status(CONFLICT).json({ message: "Email already exists" });
       }
       console.error(err);
       return res
