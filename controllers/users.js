@@ -56,7 +56,11 @@ const createUser = (req, res) => {
         password: hashedPassword,
       })
     )
-    .then((newUser) => res.status(CREATED).json(newUser))
+    .then((newUser) => {
+      const userObject = newUser.toObject();
+      delete userObject.password;
+      return res.status(CREATED).json(userObject);
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {

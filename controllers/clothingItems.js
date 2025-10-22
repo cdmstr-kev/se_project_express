@@ -3,6 +3,7 @@ const {
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
   BAD_REQUEST,
+  FORBIDDEN,
 } = require("../utils/errors");
 const { SUCCESSFUL, CREATED } = require("../utils/success");
 
@@ -74,6 +75,11 @@ const deleteClothingItem = (req, res) => {
         return res
           .status(NOT_FOUND)
           .json({ message: "Clothing item not found" });
+      }
+      if (clothingItem.owner.toString() !== req.user._id.toString()) {
+        return res
+          .status(FORBIDDEN)
+          .json({ message: "You are not authorized to delete this item" });
       }
       return res.status(SUCCESSFUL).json({ message: "Clothing item deleted" });
     })
