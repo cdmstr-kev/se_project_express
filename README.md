@@ -94,3 +94,6 @@ The project maintains a consistent code style using:
 - Consistent indentation and spacing
 - Proper semicolon usage
 - Organized imports and exports
+
+## Project Pitch Video
+https://drive.google.com/file/d/1EwjczTs-J10H9JWZxaJaGNiozyM2hGye/view?usp=drive_link
