@@ -13,13 +13,6 @@ mongoose
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ DB error:", err));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68cb6ce66bf065adb68546f0",
-  };
-  next();
-});
-
 app.use("/", mainRouter);
 
 app.use((req, res) => {

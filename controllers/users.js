@@ -24,8 +24,8 @@ const getAllUsers = (req, res) => {
     });
 };
 
-const getUserById = (req, res) => {
-  User.findById(req.params.userID)
+const getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(SUCCESSFUL).json(user))
     .catch((err) => {
@@ -72,6 +72,35 @@ const createUser = (req, res) => {
     });
 };
 
+const updateUser = (req, res) => {
+  const { name, avatar } = req.body;
+  console.log(name, avatar);
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, avatar },
+    {
+      new: true,
+      runValidators: true,
+      context: "query",
+    }
+  )
+    .orFail()
+    .then((updatedUser) => res.status(SUCCESSFUL).json(updatedUser))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res.status(BAD_REQUEST).json({ message: err.message });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).json({ message: "User not found" });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
+    });
+};
+
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -91,4 +120,4 @@ const login = (req, res, next) => {
     });
 };
 
-module.exports = { getAllUsers, getUserById, createUser, login };
+module.exports = { getAllUsers, getCurrentUser, createUser, updateUser, login };
