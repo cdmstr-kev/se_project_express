@@ -108,6 +108,12 @@ const updateUser = (req, res) => {
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .json({ message: "Email and password required" });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
