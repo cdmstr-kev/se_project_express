@@ -18,5 +18,6 @@ module.exports = (req, res, next) => {
     return res.status(UNAUTHORIZED).json({ message: "Unauthorized" });
   }
   req.user = payload;
-  next();
+
+  return next();
 };
