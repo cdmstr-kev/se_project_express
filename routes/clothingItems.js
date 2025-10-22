@@ -12,7 +12,7 @@ const {
 } = require("../controllers/clothingItems");
 
 router.get("/", getAllClothingItems);
-router.get("/:clothingItemID", getClothingItemById);
+router.get("/:clothingItemID", auth, getClothingItemById);
 router.post("/", auth, createClothingItem);
 router.put("/:clothingItemID/likes", auth, likeItem);
 router.delete("/:clothingItemID/likes", auth, dislikeItem);

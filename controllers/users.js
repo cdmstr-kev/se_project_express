@@ -11,19 +11,6 @@ const {
 const { SUCCESSFUL, CREATED } = require("../utils/success");
 const { JWT_SECRET } = require("../utils/config");
 
-const getAllUsers = (req, res) => {
-  User.find()
-    .then((users) => {
-      res.json(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .json({ message: "An error has occurred on the server." });
-    });
-};
-
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .orFail()
@@ -125,9 +112,12 @@ const login = (req, res, next) => {
       if (err.message === "Incorrect email or password") {
         return res.status(UNAUTHORIZED).json({ message: err.message });
       }
+      next(err);
 
-      return next(err);
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json({ message: "An error has occurred on the server." });
     });
 };
 
-module.exports = { getAllUsers, getCurrentUser, createUser, updateUser, login };
+module.exports = { getCurrentUser, createUser, updateUser, login };
