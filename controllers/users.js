@@ -1,3 +1,4 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const {
   BAD_REQUEST,
@@ -39,9 +40,18 @@ const getUserById = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body;
 
-  User.create({ name, avatar })
+  bcrypt
+    .hash(password, 10)
+    .then((hashedPassword) =>
+      User.create({
+        name,
+        avatar,
+        email,
+        password: hashedPassword,
+      })
+    )
     .then((newUser) => res.status(CREATED).json(newUser))
     .catch((err) => {
       console.error(err);
