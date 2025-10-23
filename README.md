@@ -95,5 +95,74 @@ The project maintains a consistent code style using:
 - Proper semicolon usage
 - Organized imports and exports
 
+## Route Details
+
+-   Route Diagram
+
+┌─────────────────────────────────────────────────────────────┐
+│              Express App (Port 3001)                        │
+│                   app.js                                    │
+└──────────────────────┬──────────────────────────────────────┘
+│
+▼
+┌────────────────┐
+│  /             │
+│ (Main Router)  │
+└────────┬───────┘
+│
+┬──────────────┼──────────────┬
+│              │              │
+▼              ▼              ▼
+┌────────┐    ┌─────────┐   ┌──────────┐
+│  Auth  │    │ /items  │   │  /users  │
+└────────┘    └─────────┘   └──────────┘
+│              │              │
+│              │              │
+┌────┴─────┐   ┌────┴────────────────────────┐   ┌────┴─────────┐
+│ 🔓 Public│   │ 🔓 Public    🔒 Protected   │   │ 🔒 Protected │
+└──────────┘   └─────────────────────────────┘   └──────────────┘
+
+Detailed Route Tree
+
+http://localhost:3001/
+│
+├── 🔓 POST /signin                      [Login]
+│
+├── 🔓 POST /signup                      [Register]
+│
+├── /items/
+│   ├── 🔓 GET    /                      [Get all items]
+│   ├── 🔒 POST   /                      [Create item]
+│   ├── 🔒 GET    /:clothingItemID       [Get item by ID]
+│   ├── 🔒 DELETE /:clothingItemID       [Delete item (owner only)]
+│   │
+│   └── /:clothingItemID/likes/
+│       ├── 🔒 PUT    /                  [Like item]
+│       └── 🔒 DELETE /                  [Unlike item]
+│
+└── /users/
+└── /me/
+├── 🔒 GET   /                   [Get current user]
+└── 🔒 PATCH /                   [Update user profile]
+
+Key Details
+
+Route Files:
+- routes/index.js - Main router, handles auth routes
+- routes/clothingItems.js - Clothing item routes
+- routes/users.js - User profile routes
+
+Controllers:
+- controllers/users.js - Auth & user management
+- controllers/clothingItems.js - Item CRUD operations
+
+Authentication:
+- 🔓 3 public routes (signin, signup, get all items)
+- 🔒 7 protected routes (require JWT Bearer token via auth middleware)
+- Tokens expire in 7 days
+
+Special Authorization:
+- DELETE /items/:clothingItemID verifies ownership (only item owner can delete)
+
 ## Project Pitch Video
 https://drive.google.com/file/d/1EwjczTs-J10H9JWZxaJaGNiozyM2hGye/view?usp=drive_link
