@@ -26,7 +26,6 @@ const getCurrentUser = (req, res, next) => {
 
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
-  console.log("🔵 createUser called with:", req.body);
 
   bcrypt
     .hash(password, 10)
@@ -44,7 +43,6 @@ const createUser = (req, res, next) => {
       return res.status(CREATED).json(userObject);
     })
     .catch((err) => {
-      console.log("🔴 Error caught in createUser:", err.name, err.message);
       if (err.name === "ValidationError") {
         next(new BadRequestError(err.message));
       } else if (err.code === 11000) {
