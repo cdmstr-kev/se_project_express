@@ -2,36 +2,31 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 const {
-  BAD_REQUEST,
-  NOT_FOUND,
-  INTERNAL_SERVER_ERROR,
-  CONFLICT,
-  UNAUTHORIZED,
+  BadRequestError,
+  NotFoundError,
+  ConflictError,
 } = require("../utils/errors");
 const { SUCCESSFUL, CREATED } = require("../utils/success");
 const { JWT_SECRET } = require("../utils/config");
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(SUCCESSFUL).json(user))
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).json({ message: "User not found" });
+        next(new NotFoundError("User not found"));
+      } else if (err.name === "CastError") {
+        next(new BadRequestError("Invalid User ID"));
+      } else {
+        next(err);
       }
-      if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).json({ message: "Invalid user ID" });
-      }
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .json({ message: "An error has occurred on the server." });
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
+  console.log("🔵 createUser called with:", req.body);
 
   bcrypt
     .hash(password, 10)
@@ -49,23 +44,19 @@ const createUser = (req, res) => {
       return res.status(CREATED).json(userObject);
     })
     .catch((err) => {
-      console.error(err);
+      console.log("🔴 Error caught in createUser:", err.name, err.message);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).json({ message: err.message });
+        next(new BadRequestError(err.message));
+      } else if (err.code === 11000) {
+        next(new ConflictError("Email already exists"));
+      } else {
+        next(err);
       }
-      if (err.code === 11000) {
-        return res.status(CONFLICT).json({ message: "Email already exists" });
-      }
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .json({ message: "An error has occurred on the server." });
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
-  console.log(name, avatar);
 
   User.findByIdAndUpdate(
     req.user._id,
@@ -79,16 +70,13 @@ const updateUser = (req, res) => {
     .orFail()
     .then((updatedUser) => res.status(SUCCESSFUL).json(updatedUser))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).json({ message: err.message });
+        next(new BadRequestError(err.message));
+      } else if (err.name === "DocumentNotFoundError") {
+        next(new NotFoundError("User not found"));
+      } else {
+        next(err);
       }
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).json({ message: "User not found" });
-      }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .json({ message: "An error has occurred on the server." });
     });
 };
 
@@ -96,9 +84,7 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(BAD_REQUEST)
-      .json({ message: "Email and password required" });
+    return next(new BadRequestError("Email and password required"));
   }
 
   return User.findUserByCredentials(email, password)
@@ -110,13 +96,10 @@ const login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
-        return res.status(UNAUTHORIZED).json({ message: err.message });
+        next(new BadRequestError("Incorrect email or password"));
+      } else {
+        next(err);
       }
-      next(err);
-
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .json({ message: "An error has occurred on the server." });
     });
 };
 
