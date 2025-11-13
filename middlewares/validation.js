@@ -1,14 +1,13 @@
 const { Joi, celebrate } = require("celebrate");
 const validator = require("validator");
 
-module.exports.validateURL = (value, helpers) => {
+const validateURL = (value, helpers) => {
   if (validator.isURL(value)) {
     return value;
   }
   return helpers.error("string.uri");
 };
-
-module.exports.validateItem = {
+const validateItem = {
   validateItemCreation: celebrate({
     body: Joi.object().keys({
       name: Joi.string().min(2).max(30).messages({
@@ -24,7 +23,7 @@ module.exports.validateItem = {
   }),
 };
 
-module.exports.validateUser = {
+const validateUser = {
   validateUserRegistration: celebrate({
     body: Joi.object().keys({
       email: Joi.string().email().required(),
@@ -42,7 +41,7 @@ module.exports.validateUser = {
   }),
 };
 
-module.exports.validateAuthentication = {
+const validateAuthentication = {
   validateUserLogin: celebrate({
     body: Joi.object().keys({
       email: Joi.string().email().required(),
@@ -51,10 +50,18 @@ module.exports.validateAuthentication = {
   }),
 };
 
-module.exports.validateId = {
+const validateId = {
   validateId: celebrate({
     params: Joi.object().keys({
       clothingItemID: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
     }),
   }),
+};
+
+module.exports = {
+  validateURL,
+  validateAuthentication,
+  validateUser,
+  validateItem,
+  validateId,
 };
