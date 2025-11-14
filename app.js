@@ -3,7 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
-const { NOT_FOUND } = require("./utils/errors");
+const { NotFoundError } = require("./utils/errors");
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
@@ -23,7 +23,7 @@ app.use(requestLogger);
 app.use("/", mainRouter);
 
 app.use((req, res) => {
-  res.status(NOT_FOUND).json({ message: "Requested resource not found" });
+  res.status(NotFoundError).json({ message: "Requested resource not found" });
 });
 
 app.use(errors());
