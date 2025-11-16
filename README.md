@@ -165,4 +165,13 @@ Special Authorization:
 - DELETE /items/:clothingItemID verifies ownership (only item owner can delete)
 
 ## Project Pitch Video
-https://drive.google.com/file/d/1EwjczTs-J10H9JWZxaJaGNiozyM2hGye/view?usp=drive_link
+https://youtu.be/dUbxt4s0_0w
+
+## Project Domain Name
+https://wtwrcdmstr.jumpingcrab.com/
+
+## Github frontend repo
+https://github.com/cdmstr-kev/se_project_react
+
+
+
