@@ -165,7 +165,7 @@ Special Authorization:
 - DELETE /items/:clothingItemID verifies ownership (only item owner can delete)
 
 ## Project Pitch Video
-https://youtu.be/dUbxt4s0_0w
+https://youtu.be/qpWPE48eFF0
 
 ## Project Domain Name
 https://wtwrcdmstr.jumpingcrab.com/
