@@ -16,14 +16,12 @@ const getAllClothingItems = (req, res, next) => {
 
 const getClothingItemById = (req, res, next) => {
   ClothingItem.findById(req.params.clothingItemID)
-    .orFail()
+    .orFail(() => new NotFoundError("Clothing item not found"))
     .then((clothingItem) => {
       res.status(SUCCESSFUL).json(clothingItem);
     })
     .catch((err) => {
-      if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("Clothing item not found"));
-      } else if (err.name === "CastError") {
+      if (err.name === "CastError") {
         next(new BadRequestError("Invalid clothing item ID"));
       } else {
         next(err);
@@ -52,7 +50,7 @@ const createClothingItem = (req, res, next) => {
 };
 
 const deleteClothingItem = (req, res, next) => {
-  ClothingItem.findByIdAndDelete(req.params.clothingItemID)
+  ClothingItem.findById(req.params.clothingItemID)
     .then((clothingItem) => {
       if (!clothingItem) {
         return next(new NotFoundError("Clothing item not found"));
@@ -62,8 +60,11 @@ const deleteClothingItem = (req, res, next) => {
           new ForbiddenError("You are not authorized to delete this item")
         );
       }
-      return res.status(SUCCESSFUL).json({ message: "Clothing item deleted" });
+      return clothingItem.deleteOne();
     })
+    .then(() =>
+      res.status(SUCCESSFUL).json({ message: "Clothing item deleted" })
+    )
     .catch((err) => {
       if (err.name === "CastError") {
         next(new BadRequestError("Invalid clothing item ID"));

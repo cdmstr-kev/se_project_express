@@ -11,12 +11,10 @@ const { JWT_SECRET } = require("../utils/config");
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
-    .orFail()
+    .orFail(() => new NotFoundError("User not found"))
     .then((user) => res.status(SUCCESSFUL).json(user))
     .catch((err) => {
-      if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("User not found"));
-      } else if (err.name === "CastError") {
+      if (err.name === "CastError") {
         next(new BadRequestError("Invalid User ID"));
       } else {
         next(err);
@@ -65,13 +63,11 @@ const updateUser = (req, res, next) => {
       context: "query",
     }
   )
-    .orFail()
+    .orFail(() => new NotFoundError("User not found"))
     .then((updatedUser) => res.status(SUCCESSFUL).json(updatedUser))
     .catch((err) => {
       if (err.name === "ValidationError") {
         next(new BadRequestError(err.message));
-      } else if (err.name === "DocumentNotFoundError") {
-        next(new NotFoundError("User not found"));
       } else {
         next(err);
       }
