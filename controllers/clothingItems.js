@@ -52,12 +52,10 @@ const deleteClothingItem = (req, res, next) => {
   ClothingItem.findById(req.params.clothingItemID)
     .then((clothingItem) => {
       if (!clothingItem) {
-        throw next(new NotFoundError("Clothing item not found"));
+        throw new NotFoundError("Clothing item not found");
       }
       if (clothingItem.owner.toString() !== req.user._id.toString()) {
-        throw next(
-          new ForbiddenError("You are not authorized to delete this item")
-        );
+        throw new ForbiddenError("You are not authorized to delete this item");
       }
       return clothingItem.deleteOne();
     })
