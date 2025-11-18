@@ -1,9 +1,8 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  NotFoundError,
-  BadRequestError,
-  ForbiddenError,
-} = require("../utils/errors");
+const NotFoundError = require("../utils/notFoundError");
+const BadRequestError = require("../utils/badRequestError");
+const ForbiddenError = require("../utils/forbiddenError");
+
 const { SUCCESSFUL, CREATED } = require("../utils/success");
 
 const getAllClothingItems = (req, res, next) => {
@@ -53,10 +52,10 @@ const deleteClothingItem = (req, res, next) => {
   ClothingItem.findById(req.params.clothingItemID)
     .then((clothingItem) => {
       if (!clothingItem) {
-        return next(new NotFoundError("Clothing item not found"));
+        throw next(new NotFoundError("Clothing item not found"));
       }
       if (clothingItem.owner.toString() !== req.user._id.toString()) {
-        return next(
+        throw next(
           new ForbiddenError("You are not authorized to delete this item")
         );
       }

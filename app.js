@@ -4,7 +4,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
-const { NotFoundError } = require("./utils/errors");
+const { NotFoundError } = require("./utils/notFoundError");
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 

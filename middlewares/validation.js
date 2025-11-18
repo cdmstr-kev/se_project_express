@@ -59,10 +59,26 @@ const validateId = {
   }),
 };
 
+const validateProfileUpdate = {
+  validateProfileUpdate: celebrate({
+    body: Joi.object().keys({
+      name: Joi.string().min(2).max(30).required().messages({
+        "string.empty": "The 'Name' field must be filled in",
+        "string.min": 'The minimum length of the "name" field is 2',
+        "string.max": 'The maximum length of the "name" field is 30',
+      }),
+      avatar: Joi.string().required().custom(validateURL).messages({
+        "string.empty": "The 'ImageUrl' field must be filled in",
+      }),
+    }),
+  }),
+};
+
 module.exports = {
   validateURL,
   validateAuthentication,
   validateUser,
   validateItem,
   validateId,
+  validateProfileUpdate,
 };
