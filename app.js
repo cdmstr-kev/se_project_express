@@ -3,14 +3,18 @@ const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 const { errors } = require("celebrate");
+const helmet = require("helmet");
 const mainRouter = require("./routes/index");
-const { NotFoundError } = require("./utils/notFoundError");
+const NotFoundError = require("./utils/notFoundError");
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
+const limiter = require("./middlewares/rateLimiter");
 
 const app = express();
 const { PORT = 3001 } = process.env;
 
+app.use(helmet());
+app.use(limiter);
 app.use(cors());
 app.use(express.json());
 
